@@ -2,7 +2,7 @@
 
 # **MiniAWS Simulator**
 
-MiniAWS is a Python-based library that simulates interactions with AWS services using classes to abstract AWS SDK (boto3) functionality. It enables developers to prototype, test, and interact with AWS-like services locally or in real environments.
+MiniAWS is a Python-based library that simulates interactions with AWS services using classes to abstract AWS SDK (`boto3`) functionality. It enables developers to prototype, test, and interact with AWS-like services locally or in real environments.
 
 ---
 
@@ -24,151 +24,97 @@ The project includes several classes to interact with AWS services:
 
 ## **IAM Class**
 
-The `IAM` class provides methods to manage IAM users, groups, roles, and policies.
+### **Functionality**
 
-### **Functionalities Demonstrated in `demo_iam.py`**
-
-1. **User Management**:
-   - Create, list, and delete IAM users.
-   ```python
-   iam.create_iam_user("test-user")
-   iam.list_iam_users()
-   iam.delete_iam_user("test-user")
-   ```
-
-2. **Group Management**:
-   - Create, list, delete groups, and manage user-group relationships.
-   ```python
-   iam.create_group("test-group")
-   iam.add_user_to_group("test-user", "test-group")
-   iam.remove_user_from_group("test-user", "test-group")
-   iam.delete_group("test-group")
-   ```
-
-3. **Role Management**:
-   - Create, list, and delete IAM roles.
-   - Attach a policy to a role.
-   ```python
-   assume_role_policy = """{
-       "Version": "2012-10-17",
-       "Statement": [
-           {
-               "Effect": "Allow",
-               "Principal": {
-                   "Service": "ec2.amazonaws.com"
-               },
-               "Action": "sts:AssumeRole"
-           }
-       ]
-   }"""
-   iam.create_role("test-role", assume_role_policy)
-   iam.attach_role_policy("test-role", policy_arn)
-   iam.delete_role("test-role")
-   ```
-
-4. **Policy Management**:
-   - Create, list, attach, and delete policies.
-   - Attach policies to users, groups, and roles.
-   ```python
-   policy_document = """{
-       "Version": "2012-10-17",
-       "Statement": [
-           {
-               "Effect": "Allow",
-               "Action": "s3:ListBucket",
-               "Resource": "arn:aws:s3:::example-bucket"
-           }
-       ]
-   }"""
-   policy_arn = iam.create_policy("test-policy", policy_document)
-   iam.attach_user_policy("test-user", policy_arn)
-   iam.attach_group_policy("test-group", policy_arn)
-   iam.delete_policy(policy_arn)
-   ```
+| **Function**                     | **Description**                                                                                   |
+|-----------------------------------|---------------------------------------------------------------------------------------------------|
+| `create_iam_user(user_name)`      | Creates a new IAM user.                                                                           |
+| `list_iam_users()`                | Lists all IAM users.                                                                              |
+| `delete_iam_user(user_name)`      | Deletes an IAM user.                                                                              |
+| `create_group(group_name)`        | Creates a new IAM group.                                                                          |
+| `list_groups()`                   | Lists all IAM groups.                                                                             |
+| `delete_group(group_name)`        | Deletes an IAM group.                                                                             |
+| `add_user_to_group(user, group)`  | Adds a user to a group.                                                                           |
+| `remove_user_from_group(user, group)` | Removes a user from a group.                                                                  |
+| `create_role(role_name, policy)`  | Creates a new IAM role.                                                                           |
+| `list_roles()`                    | Lists all IAM roles.                                                                              |
+| `delete_role(role_name)`          | Deletes an IAM role.                                                                              |
+| `create_policy(name, document)`   | Creates a new IAM policy.                                                                         |
+| `delete_policy(policy_arn)`       | Deletes an IAM policy.                                                                            |
+| `attach_user_policy(user, policy)`| Attaches a policy to a user.                                                                      |
+| `detach_user_policy(user, policy)`| Detaches a policy from a user.                                                                    |
+| `attach_group_policy(group, policy)` | Attaches a policy to a group.                                                                  |
+| `detach_group_policy(group, policy)` | Detaches a policy from a group.                                                                |
 
 ---
 
-## **Installation**
+## **CloudWatch Class**
 
-### Prerequisites
-- Python 3.8 or later
-- [Pipenv](https://pipenv.pypa.io/en/latest/) or virtualenv (optional, for isolated environments)
-- AWS credentials configured via the AWS CLI or environment variables (if running against AWS)
+### **Functionality**
 
-### Steps
+| **Function**                     | **Description**                                                                                   |
+|-----------------------------------|---------------------------------------------------------------------------------------------------|
+| `create_log_group(name)`          | Creates a new CloudWatch log group.                                                               |
+| `list_log_groups()`               | Lists all CloudWatch log groups.                                                                  |
+| `delete_log_group(name)`          | Deletes a CloudWatch log group.                                                                   |
+| `put_metric_data(ns, name, value, dimensions, unit)` | Publishes a custom metric to CloudWatch.                                       |
+| `list_metrics(ns)`                | Lists all metrics in a specific namespace.                                                       |
+| `create_alarm(name, metric, ns, threshold, ...)` | Creates a CloudWatch alarm.                                                               |
+| `list_alarms()`                   | Lists all CloudWatch alarms.                                                                      |
+| `delete_alarm(name)`              | Deletes a CloudWatch alarm.                                                                       |
+| `create_dashboard(name, body)`    | Creates a CloudWatch dashboard.                                                                   |
+| `list_dashboards()`               | Lists all CloudWatch dashboards.                                                                  |
+| `delete_dashboard(name)`          | Deletes a CloudWatch dashboard.                                                                   |
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo/miniAWS.git
-   cd miniAWS
-   ```
+---
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## **CloudFormation Class**
 
-3. Install `moto` for testing:
-   ```bash
-   pip install moto
-   ```
+### **Functionality**
+
+| **Function**                     | **Description**                                                                                   |
+|-----------------------------------|---------------------------------------------------------------------------------------------------|
+| `create_stack(name, template)`    | Creates a CloudFormation stack using a given template.                                            |
+| `delete_stack(name)`              | Deletes a CloudFormation stack.                                                                   |
+| `list_stacks()`                   | Lists all CloudFormation stacks.                                                                  |
+| `update_stack(name, template)`    | Updates a stack with a new template.                                                              |
+| `describe_stack(name)`            | Describes the details of a specific stack.                                                        |
+
+---
+
+## **Queue Class**
+
+### **Functionality**
+
+| **Function**                     | **Description**                                                                                   |
+|-----------------------------------|---------------------------------------------------------------------------------------------------|
+| `create_queue(name)`              | Creates a new SQS queue.                                                                          |
+| `list_queues()`                   | Lists all SQS queues.                                                                             |
+| `delete_queue(name)`              | Deletes an SQS queue.                                                                             |
+| `send_message(queue, message)`    | Sends a message to an SQS queue.                                                                  |
+| `receive_message(queue)`          | Receives messages from an SQS queue.                                                              |
+| `delete_message(queue, receipt)`  | Deletes a message from an SQS queue using its receipt handle.                                     |
 
 ---
 
 ## **Usage**
 
-### **IAM**
+### **Demo Scripts**
 
-#### **User Management**
-```python
-iam = IAM(region="us-east-1")
-print(iam.create_iam_user("test-user"))
-print(iam.list_iam_users())
-print(iam.delete_iam_user("test-user"))
+#### **`demo_iam.py`**
+Demonstrates the use of the `IAM` class for managing AWS IAM resources.
+
+Run the script:
+```bash
+python demos/demo_iam.py
 ```
 
-#### **Group Management**
-```python
-iam.create_group("test-group")
-iam.add_user_to_group("test-user", "test-group")
-iam.remove_user_from_group("test-user", "test-group")
-iam.delete_group("test-group")
-```
+#### **`demo_cloudwatch.py`**
+Demonstrates the use of the `CloudWatch` class for managing AWS CloudWatch resources.
 
-#### **Role Management**
-```python
-assume_role_policy = """{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "Service": "ec2.amazonaws.com"
-            },
-            "Action": "sts:AssumeRole"
-        }
-    ]
-}"""
-iam.create_role("test-role", assume_role_policy)
-iam.attach_role_policy("test-role", policy_arn)
-iam.delete_role("test-role")
-```
-
-#### **Policy Management**
-```python
-policy_document = """{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "s3:ListBucket",
-            "Resource": "arn:aws:s3:::example-bucket"
-        }
-    ]
-}"""
-policy_arn = iam.create_policy("test-policy", policy_document)
-iam.attach_user_policy("test-user", policy_arn)
-iam.delete_policy(policy_arn)
+Run the script:
+```bash
+python demos/demo_cloudwatch.py
 ```
 
 ---
@@ -181,12 +127,6 @@ Unit tests are implemented for all classes using the **`moto`** library to mock 
 
 ```bash
 pytest tests
-```
-
-### Run Tests for a Specific Class
-
-```bash
-pytest tests/test_iam.py
 ```
 
 ---
@@ -206,6 +146,7 @@ miniAWS/
 │   ├── compute.py
 ├── demos/
 │   ├── demo_iam.py
+│   ├── demo_cloudwatch.py
 ├── tests/
 │   ├── test_iam.py
 │   ├── test_cloudwatch.py
@@ -220,21 +161,8 @@ miniAWS/
 
 ---
 
-## **Contributing**
-
-Contributions are welcome! Please open an issue or submit a pull request to propose changes or add new features.
-
----
-
 ## **License**
 
 This project is licensed under the [MIT License](LICENSE).
-
----
-
-## **Acknowledgments**
-
-- [Boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html): Python SDK for AWS.
-- [Moto](https://github.com/spulec/moto): Library for mocking AWS services in tests.
 
 ---
