@@ -22,6 +22,89 @@ The project includes several classes to interact with AWS services:
 
 ---
 
+## **Installation**
+
+### Prerequisites
+
+- Python 3.8 or later
+- [Pipenv](https://pipenv.pypa.io/en/latest/) or virtualenv (optional, for isolated environments)
+- AWS credentials configured via the AWS CLI or environment variables (if running against AWS)
+
+### Steps
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-repo/miniAWS.git
+   cd miniAWS
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Install `moto` for testing:
+   ```bash
+   pip install moto
+   ```
+
+---
+
+## **Testing**
+
+Unit tests are implemented for all classes using the **`moto`** library to mock AWS services.
+
+### Run All Tests
+
+```bash
+pytest tests
+```
+
+---
+
+## **Directory Structure**
+
+```
+miniAWS/
+├── aws_wrapper/
+│   ├── __init__.py
+│   ├── iam.py
+│   ├── cloudwatch.py
+│   ├── cloudformation.py
+│   ├── queue.py
+│   ├── storage.py
+│   ├── database.py
+│   ├── compute.py
+├── demos/
+│   ├── demo_iam.py
+│   ├── demo_cloudwatch.py
+│   ├── demo_cloudformation.py
+├── tests/
+│   ├── test_iam.py
+│   ├── test_cloudwatch.py
+│   ├── test_cloudformation.py
+│   ├── test_queue.py
+│   ├── test_storage.py
+│   ├── test_database.py
+│   ├── test_compute.py
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## **Contributing**
+
+Contributions are welcome! Please open an issue or submit a pull request to propose changes or add new features.
+
+---
+
+## **License**
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
 ## **Demo Scripts**
 
 ### **`demo_iam.py`**
@@ -231,88 +314,5 @@ Demonstrates the use of the `CloudFormation` class for managing AWS CloudFormati
    ```python
    print(cloudformation.delete_stack(stack_name))
    ```
-
----
-
-## **Installation**
-
-### Prerequisites
-
-- Python 3.8 or later
-- [Pipenv](https://pipenv.pypa.io/en/latest/) or virtualenv (optional, for isolated environments)
-- AWS credentials configured via the AWS CLI or environment variables (if running against AWS)
-
-### Steps
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-repo/miniAWS.git
-   cd miniAWS
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Install `moto` for testing:
-   ```bash
-   pip install moto
-   ```
-
----
-
-## **Testing**
-
-Unit tests are implemented for all classes using the **`moto`** library to mock AWS services.
-
-### Run All Tests
-
-```bash
-pytest tests
-```
-
----
-
-## **Directory Structure**
-
-```
-miniAWS/
-├── aws_wrapper/
-│   ├── __init__.py
-│   ├── iam.py
-│   ├── cloudwatch.py
-│   ├── cloudformation.py
-│   ├── queue.py
-│   ├── storage.py
-│   ├── database.py
-│   ├── compute.py
-├── demos/
-│   ├── demo_iam.py
-│   ├── demo_cloudwatch.py
-│   ├── demo_cloudformation.py
-├── tests/
-│   ├── test_iam.py
-│   ├── test_cloudwatch.py
-│   ├── test_cloudformation.py
-│   ├── test_queue.py
-│   ├── test_storage.py
-│   ├── test_database.py
-│   ├── test_compute.py
-├── requirements.txt
-└── README.md
-```
-
----
-
-## **Contributing**
-
-Contributions are welcome! Please open an issue or submit a pull request to propose changes or add new features.
-
----
-
-## **License**
-
-This project is licensed under the [MIT License](LICENSE).
 
 ---
