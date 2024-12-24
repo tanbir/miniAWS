@@ -90,13 +90,15 @@ class IAM:
     # Policy Management
     def create_policy(self, policy_name, policy_document):
         """
-        Creates a new IAM policy.
+        Creates a new IAM policy and returns its ARN.
         """
         response = self.iam.create_policy(
-            PolicyName=policy_name, PolicyDocument=policy_document
+            PolicyName=policy_name,
+            PolicyDocument=policy_document
         )
-        return f"IAM policy '{policy_name}' created successfully."
-
+        policy_arn = response["Policy"]["Arn"]
+        return policy_arn
+        
     def delete_policy(self, policy_arn):
         """
         Deletes an IAM policy.
