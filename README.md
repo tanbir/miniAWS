@@ -1,5 +1,3 @@
-Here’s a comprehensive `README.md` for the project that provides an overview of the classes, their features, installation instructions, usage examples, and testing information.
-
 ---
 
 # **MiniAWS Simulator**
@@ -35,7 +33,7 @@ The project includes several classes to interact with AWS services:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/miniAWS.git
+   git clone https://github.com/tanbir/miniAWS.git
    cd miniAWS
    ```
 
@@ -252,5 +250,3 @@ This project is licensed under the [MIT License](LICENSE).
 - [Moto](https://github.com/spulec/moto): Library for mocking AWS services in tests.
 
 ---
-
-Feel free to customize the content as needed for your project. Let me know if you'd like further enhancements or additional sections!
