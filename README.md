@@ -22,100 +22,243 @@ The project includes several classes to interact with AWS services:
 
 ---
 
-## **IAM Class**
+## **Demo Scripts**
 
-### **Functionality**
-
-| **Function**                     | **Description**                                                                                   |
-|-----------------------------------|---------------------------------------------------------------------------------------------------|
-| `create_iam_user(user_name)`      | Creates a new IAM user.                                                                           |
-| `list_iam_users()`                | Lists all IAM users.                                                                              |
-| `delete_iam_user(user_name)`      | Deletes an IAM user.                                                                              |
-| `create_group(group_name)`        | Creates a new IAM group.                                                                          |
-| `list_groups()`                   | Lists all IAM groups.                                                                             |
-| `delete_group(group_name)`        | Deletes an IAM group.                                                                             |
-| `add_user_to_group(user, group)`  | Adds a user to a group.                                                                           |
-| `remove_user_from_group(user, group)` | Removes a user from a group.                                                                  |
-| `create_role(role_name, policy)`  | Creates a new IAM role.                                                                           |
-| `list_roles()`                    | Lists all IAM roles.                                                                              |
-| `delete_role(role_name)`          | Deletes an IAM role.                                                                              |
-| `create_policy(name, document)`   | Creates a new IAM policy.                                                                         |
-| `delete_policy(policy_arn)`       | Deletes an IAM policy.                                                                            |
-| `attach_user_policy(user, policy)`| Attaches a policy to a user.                                                                      |
-| `detach_user_policy(user, policy)`| Detaches a policy from a user.                                                                    |
-| `attach_group_policy(group, policy)` | Attaches a policy to a group.                                                                  |
-| `detach_group_policy(group, policy)` | Detaches a policy from a group.                                                                |
-
----
-
-## **CloudWatch Class**
-
-### **Functionality**
-
-| **Function**                     | **Description**                                                                                   |
-|-----------------------------------|---------------------------------------------------------------------------------------------------|
-| `create_log_group(name)`          | Creates a new CloudWatch log group.                                                               |
-| `list_log_groups()`               | Lists all CloudWatch log groups.                                                                  |
-| `delete_log_group(name)`          | Deletes a CloudWatch log group.                                                                   |
-| `put_metric_data(ns, name, value, dimensions, unit)` | Publishes a custom metric to CloudWatch.                                       |
-| `list_metrics(ns)`                | Lists all metrics in a specific namespace.                                                       |
-| `create_alarm(name, metric, ns, threshold, ...)` | Creates a CloudWatch alarm.                                                               |
-| `list_alarms()`                   | Lists all CloudWatch alarms.                                                                      |
-| `delete_alarm(name)`              | Deletes a CloudWatch alarm.                                                                       |
-| `create_dashboard(name, body)`    | Creates a CloudWatch dashboard.                                                                   |
-| `list_dashboards()`               | Lists all CloudWatch dashboards.                                                                  |
-| `delete_dashboard(name)`          | Deletes a CloudWatch dashboard.                                                                   |
-
----
-
-## **CloudFormation Class**
-
-### **Functionality**
-
-| **Function**                     | **Description**                                                                                   |
-|-----------------------------------|---------------------------------------------------------------------------------------------------|
-| `create_stack(name, template)`    | Creates a CloudFormation stack using a given template.                                            |
-| `delete_stack(name)`              | Deletes a CloudFormation stack.                                                                   |
-| `list_stacks()`                   | Lists all CloudFormation stacks.                                                                  |
-| `update_stack(name, template)`    | Updates a stack with a new template.                                                              |
-| `describe_stack(name)`            | Describes the details of a specific stack.                                                        |
-
----
-
-## **Queue Class**
-
-### **Functionality**
-
-| **Function**                     | **Description**                                                                                   |
-|-----------------------------------|---------------------------------------------------------------------------------------------------|
-| `create_queue(name)`              | Creates a new SQS queue.                                                                          |
-| `list_queues()`                   | Lists all SQS queues.                                                                             |
-| `delete_queue(name)`              | Deletes an SQS queue.                                                                             |
-| `send_message(queue, message)`    | Sends a message to an SQS queue.                                                                  |
-| `receive_message(queue)`          | Receives messages from an SQS queue.                                                              |
-| `delete_message(queue, receipt)`  | Deletes a message from an SQS queue using its receipt handle.                                     |
-
----
-
-## **Usage**
-
-### **Demo Scripts**
-
-#### **`demo_iam.py`**
+### **`demo_iam.py`**
 Demonstrates the use of the `IAM` class for managing AWS IAM resources.
 
-Run the script:
-```bash
-python demos/demo_iam.py
-```
+#### **Functionalities**
 
-#### **`demo_cloudwatch.py`**
+1. **User Management**:
+   - Create, list, and delete IAM users.
+
+   ```python
+   iam.create_iam_user("test-user")
+   users = iam.list_iam_users()
+   iam.delete_iam_user("test-user")
+   ```
+
+2. **Group Management**:
+   - Create, list, and delete groups.
+   - Add and remove users from groups.
+
+   ```python
+   iam.create_group("test-group")
+   iam.add_user_to_group("test-user", "test-group")
+   iam.remove_user_from_group("test-user", "test-group")
+   iam.delete_group("test-group")
+   ```
+
+3. **Role Management**:
+   - Create, list, and delete roles.
+
+   ```python
+   assume_role_policy = """{
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Effect": "Allow",
+               "Principal": {"Service": "ec2.amazonaws.com"},
+               "Action": "sts:AssumeRole"
+           }
+       ]
+   }"""
+   iam.create_role("test-role", assume_role_policy)
+   roles = iam.list_roles()
+   iam.delete_role("test-role")
+   ```
+
+4. **Policy Management**:
+   - Create, attach, detach, and delete policies for users, groups, and roles.
+
+   ```python
+   policy_document = """{
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Effect": "Allow",
+               "Action": "s3:ListBucket",
+               "Resource": "arn:aws:s3:::example-bucket"
+           }
+       ]
+   }"""
+   policy_arn = iam.create_policy("test-policy", policy_document)
+   iam.attach_user_policy("test-user", policy_arn)
+   iam.detach_user_policy("test-user", policy_arn)
+   iam.delete_policy(policy_arn)
+   ```
+
+---
+
+### **`demo_cloudwatch.py`**
 Demonstrates the use of the `CloudWatch` class for managing AWS CloudWatch resources.
 
-Run the script:
-```bash
-python demos/demo_cloudwatch.py
-```
+#### **Functionalities**
+
+1. **Log Group Management**:
+   - Create, list, and delete log groups.
+
+   ```python
+   cw.create_log_group("test-log-group")
+   log_groups = cw.list_log_groups()
+   cw.delete_log_group("test-log-group")
+   ```
+
+2. **Metric Management**:
+   - Publish custom metrics to CloudWatch.
+   - List metrics in a specific namespace.
+
+   ```python
+   namespace = "MyNamespace"
+   metric_name = "MyMetric"
+   dimensions = [{"Name": "InstanceId", "Value": "i-12345678"}]
+   cw.put_metric_data(namespace, metric_name, value=100, dimensions=dimensions)
+   metrics = cw.list_metrics(namespace=namespace)
+   ```
+
+3. **Alarm Management**:
+   - Create and delete alarms.
+   - List active alarms.
+
+   ```python
+   alarm_name = "HighCPUUtilization"
+   cw.create_alarm(
+       alarm_name=alarm_name,
+       metric_name=metric_name,
+       namespace=namespace,
+       threshold=80,
+       comparison_operator="GreaterThanThreshold",
+       evaluation_periods=1,
+       period=60,
+       statistic="Average",
+       dimensions=dimensions,
+   )
+   alarms = cw.list_alarms()
+   cw.delete_alarm(alarm_name)
+   ```
+
+4. **Dashboard Management**:
+   - Create, list, and delete dashboards.
+
+   ```python
+   dashboard_name = "TestDashboard"
+   dashboard_body = """{
+       "widgets": [
+           {
+               "type": "metric",
+               "x": 0,
+               "y": 0,
+               "width": 6,
+               "height": 6,
+               "properties": {
+                   "metrics": [
+                       ["MyNamespace", "MyMetric"]
+                   ],
+                   "period": 300,
+                   "stat": "Average",
+                   "region": "us-east-1",
+                   "title": "MyMetric Dashboard"
+               }
+           }
+       ]
+   }"""
+   cw.create_dashboard(dashboard_name, dashboard_body)
+   dashboards = cw.list_dashboards()
+   cw.delete_dashboard(dashboard_name)
+   ```
+
+---
+
+### **`demo_cloudformation.py`**
+Demonstrates the use of the `CloudFormation` class for managing AWS CloudFormation stacks.
+
+#### **Functionalities**
+
+1. **Create a Stack**:
+   - Creates a CloudFormation stack with a simple S3 bucket template.
+
+   ```python
+   stack_name = "DemoStack"
+   template_body = """{
+       "Resources": {
+           "MyBucket": {
+               "Type": "AWS::S3::Bucket",
+               "Properties": {
+                   "BucketName": "demo-cloudformation-bucket"
+               }
+           }
+       }
+   }"""
+   print(cloudformation.create_stack(stack_name, template_body))
+   ```
+
+2. **List Stacks**:
+   - Lists all existing CloudFormation stacks.
+
+   ```python
+   stacks = cloudformation.list_stacks()
+   print("Stacks:", stacks)
+   ```
+
+3. **Describe a Stack**:
+   - Retrieves details of the specified stack.
+
+   ```python
+   stack_description = cloudformation.describe_stack(stack_name)
+   print("Description:", stack_description)
+   ```
+
+4. **Update a Stack**:
+   - Updates the stack using a new template.
+
+   ```python
+   updated_template_body = """{
+       "Resources": {
+           "MyBucket": {
+               "Type": "AWS::S3::Bucket",
+               "Properties": {
+                   "BucketName": "updated-cloudformation-bucket"
+               }
+           }
+       }
+   }"""
+   print(cloudformation.update_stack(stack_name, updated_template_body))
+   ```
+
+5. **Delete a Stack**:
+   - Deletes the specified CloudFormation stack.
+
+   ```python
+   print(cloudformation.delete_stack(stack_name))
+   ```
+
+---
+
+## **Installation**
+
+### Prerequisites
+
+- Python 3.8 or later
+- [Pipenv](https://pipenv.pypa.io/en/latest/) or virtualenv (optional, for isolated environments)
+- AWS credentials configured via the AWS CLI or environment variables (if running against AWS)
+
+### Steps
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-repo/miniAWS.git
+   cd miniAWS
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Install `moto` for testing:
+   ```bash
+   pip install moto
+   ```
 
 ---
 
@@ -147,6 +290,7 @@ miniAWS/
 ├── demos/
 │   ├── demo_iam.py
 │   ├── demo_cloudwatch.py
+│   ├── demo_cloudformation.py
 ├── tests/
 │   ├── test_iam.py
 │   ├── test_cloudwatch.py
@@ -158,6 +302,12 @@ miniAWS/
 ├── requirements.txt
 └── README.md
 ```
+
+---
+
+## **Contributing**
+
+Contributions are welcome! Please open an issue or submit a pull request to propose changes or add new features.
 
 ---
 
