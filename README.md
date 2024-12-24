@@ -93,18 +93,6 @@ miniAWS/
 
 ---
 
-## **Contributing**
-
-Contributions are welcome! Please open an issue or submit a pull request to propose changes or add new features.
-
----
-
-## **License**
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
 ## **Demo Scripts**
 
 ### **`demo_iam.py`**
@@ -314,5 +302,17 @@ Demonstrates the use of the `CloudFormation` class for managing AWS CloudFormati
    ```python
    print(cloudformation.delete_stack(stack_name))
    ```
+
+---
+
+## **Contributing**
+
+Contributions are welcome! Please open an issue or submit a pull request to propose changes or add new features.
+
+---
+
+## **License**
+
+This project is licensed under the [MIT License](LICENSE).
 
 ---
