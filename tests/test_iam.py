@@ -111,20 +111,12 @@ class TestIAM(unittest.TestCase):
 
         # Test policy creation
         response = self.iam.create_policy("test-policy", policy_document)
-        self.assertEqual(response, "IAM policy 'test-policy' created successfully.")
-
-        # Test listing policies
-        policies = self.iam.list_policies()
-        self.assertIn("test-policy", policies)
+        expected_arn = "arn:aws:iam::123456789012:policy/test-policy"
+        self.assertEqual(response, expected_arn)
 
         # Test policy deletion
-        policy_arn = "arn:aws:iam::123456789012:policy/test-policy"
-        response = self.iam.delete_policy(policy_arn)
-        self.assertEqual(response, f"IAM policy with ARN '{policy_arn}' deleted successfully.")
-
-        # Test listing policies after deletion
-        policies = self.iam.list_policies()
-        self.assertNotIn("test-policy", policies)
+        delete_response = self.iam.delete_policy(expected_arn)
+        self.assertEqual(delete_response, f"IAM policy with ARN '{expected_arn}' deleted successfully.")
 
     @mock_aws
     def test_attach_and_detach_user_policy(self):

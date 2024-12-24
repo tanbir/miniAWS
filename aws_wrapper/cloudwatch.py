@@ -26,6 +26,18 @@ class CloudWatch:
         )
         return f"Metric '{metric_name}' published to namespace '{namespace}'."
 
+    def list_metrics(self, namespace=None):
+        response = self.cloudwatch.list_metrics(Namespace=namespace)
+        metrics = [
+            {
+                "Namespace": metric["Namespace"],
+                "MetricName": metric["MetricName"],
+                "Dimensions": metric.get("Dimensions", []),
+            }
+            for metric in response.get("Metrics", [])
+        ]
+        return metrics
+
     def get_metric_statistics(self, namespace, metric_name, start_time, end_time, period, statistics, dimensions=None):
         """
         Retrieves metric statistics.
@@ -45,25 +57,44 @@ class CloudWatch:
         return response.get("Datapoints", [])
 
     # Alarms Management
-    def create_alarm(self, alarm_name, metric_name, namespace, comparison_operator, threshold, evaluation_periods, period, statistic, actions=None):
+    def create_alarm(
+        self,
+        alarm_name,
+        metric_name,
+        namespace,
+        threshold,
+        comparison_operator,
+        evaluation_periods,
+        period,
+        statistic,
+        dimensions=None,
+    ):
         """
-        Creates a CloudWatch alarm.
+        Create a CloudWatch alarm.
+        :param alarm_name: Name of the alarm.
+        :param metric_name: Metric to monitor.
+        :param namespace: Namespace of the metric.
+        :param threshold: Threshold value for the alarm.
+        :param comparison_operator: Operator for comparing metric values.
+        :param evaluation_periods: Number of periods to evaluate.
+        :param period: Period in seconds for the metric.
+        :param statistic: Statistic to apply (e.g., "Average").
+        :param dimensions: Dimensions for the metric (optional).
+        :return: Success message.
         """
-        params = {
-            "AlarmName": alarm_name,
-            "MetricName": metric_name,
-            "Namespace": namespace,
-            "ComparisonOperator": comparison_operator,
-            "Threshold": threshold,
-            "EvaluationPeriods": evaluation_periods,
-            "Period": period,
-            "Statistic": statistic,
-        }
-        if actions:
-            params["AlarmActions"] = actions
-
-        self.cloudwatch.put_metric_alarm(**params)
+        self.cloudwatch.put_metric_alarm(
+            AlarmName=alarm_name,
+            MetricName=metric_name,
+            Namespace=namespace,
+            Threshold=threshold,
+            ComparisonOperator=comparison_operator,
+            EvaluationPeriods=evaluation_periods,
+            Period=period,
+            Statistic=statistic,
+            Dimensions=dimensions or [],
+        )
         return f"Alarm '{alarm_name}' created successfully."
+
 
     def delete_alarm(self, alarm_name):
         """
@@ -74,10 +105,11 @@ class CloudWatch:
 
     def list_alarms(self):
         """
-        Lists all CloudWatch alarms.
+        List all CloudWatch alarms.
+        :return: List of dictionaries containing alarm details.
         """
         response = self.cloudwatch.describe_alarms()
-        return [alarm["AlarmName"] for alarm in response.get("MetricAlarms", [])]
+        return response.get("MetricAlarms", [])
 
     # Logs Management
     def create_log_group(self, log_group_name):
@@ -86,6 +118,10 @@ class CloudWatch:
         """
         self.logs.create_log_group(logGroupName=log_group_name)
         return f"Log group '{log_group_name}' created successfully."
+
+    def list_log_groups(self):
+        response = self.logs.describe_log_groups()
+        return [log_group["logGroupName"] for log_group in response.get("logGroups", [])]
 
     def delete_log_group(self, log_group_name):
         """
