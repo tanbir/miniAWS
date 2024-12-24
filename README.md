@@ -22,6 +22,72 @@ The project includes several classes to interact with AWS services:
 
 ---
 
+## **IAM Class**
+
+The `IAM` class provides methods to manage IAM users, groups, roles, and policies.
+
+### **Functionalities Demonstrated in `demo_iam.py`**
+
+1. **User Management**:
+   - Create, list, and delete IAM users.
+   ```python
+   iam.create_iam_user("test-user")
+   iam.list_iam_users()
+   iam.delete_iam_user("test-user")
+   ```
+
+2. **Group Management**:
+   - Create, list, delete groups, and manage user-group relationships.
+   ```python
+   iam.create_group("test-group")
+   iam.add_user_to_group("test-user", "test-group")
+   iam.remove_user_from_group("test-user", "test-group")
+   iam.delete_group("test-group")
+   ```
+
+3. **Role Management**:
+   - Create, list, and delete IAM roles.
+   - Attach a policy to a role.
+   ```python
+   assume_role_policy = """{
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Effect": "Allow",
+               "Principal": {
+                   "Service": "ec2.amazonaws.com"
+               },
+               "Action": "sts:AssumeRole"
+           }
+       ]
+   }"""
+   iam.create_role("test-role", assume_role_policy)
+   iam.attach_role_policy("test-role", policy_arn)
+   iam.delete_role("test-role")
+   ```
+
+4. **Policy Management**:
+   - Create, list, attach, and delete policies.
+   - Attach policies to users, groups, and roles.
+   ```python
+   policy_document = """{
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Effect": "Allow",
+               "Action": "s3:ListBucket",
+               "Resource": "arn:aws:s3:::example-bucket"
+           }
+       ]
+   }"""
+   policy_arn = iam.create_policy("test-policy", policy_document)
+   iam.attach_user_policy("test-user", policy_arn)
+   iam.attach_group_policy("test-group", policy_arn)
+   iam.delete_policy(policy_arn)
+   ```
+
+---
+
 ## **Installation**
 
 ### Prerequisites
@@ -33,7 +99,7 @@ The project includes several classes to interact with AWS services:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/tanbir/miniAWS.git
+   git clone https://github.com/your-repo/miniAWS.git
    cd miniAWS
    ```
 
@@ -52,17 +118,44 @@ The project includes several classes to interact with AWS services:
 ## **Usage**
 
 ### **IAM**
-Manage IAM users, groups, roles, and policies.
 
+#### **User Management**
 ```python
-from aws_wrapper.iam import IAM
-
 iam = IAM(region="us-east-1")
-
-# Create a new user
 print(iam.create_iam_user("test-user"))
+print(iam.list_iam_users())
+print(iam.delete_iam_user("test-user"))
+```
 
-# Create and attach a policy
+#### **Group Management**
+```python
+iam.create_group("test-group")
+iam.add_user_to_group("test-user", "test-group")
+iam.remove_user_from_group("test-user", "test-group")
+iam.delete_group("test-group")
+```
+
+#### **Role Management**
+```python
+assume_role_policy = """{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}"""
+iam.create_role("test-role", assume_role_policy)
+iam.attach_role_policy("test-role", policy_arn)
+iam.delete_role("test-role")
+```
+
+#### **Policy Management**
+```python
 policy_document = """{
     "Version": "2012-10-17",
     "Statement": [
@@ -74,115 +167,8 @@ policy_document = """{
     ]
 }"""
 policy_arn = iam.create_policy("test-policy", policy_document)
-print(iam.attach_user_policy("test-user", policy_arn))
-```
-
----
-
-### **CloudWatch**
-Manage CloudWatch metrics, alarms, logs, and dashboards.
-
-```python
-from aws_wrapper.cloudwatch import CloudWatch
-
-cw = CloudWatch(region="us-east-1")
-
-# Publish a metric
-print(cw.put_metric_data("MyNamespace", "MyMetric", 100, unit="Count"))
-
-# Create a CloudWatch log group
-print(cw.create_log_group("MyLogGroup"))
-```
-
----
-
-### **CloudFormation**
-Handle infrastructure as code with CloudFormation stacks.
-
-```python
-from aws_wrapper.cloudformation import CloudFormation
-
-cf = CloudFormation(region="us-east-1")
-
-# Create a stack
-template_body = """{
-    "Resources": {
-        "MyBucket": {
-            "Type": "AWS::S3::Bucket",
-            "Properties": {
-                "BucketName": "my-cloudformation-bucket"
-            }
-        }
-    }
-}"""
-print(cf.create_stack("MyTestStack", template_body))
-```
-
----
-
-### **Queue**
-Manage SQS queues and messages.
-
-```python
-from aws_wrapper.queue import Queue
-
-queue = Queue(region="us-east-1")
-
-# Create a queue
-queue_url = queue.create_queue("test-queue")
-
-# Send and receive messages
-queue.send_message(queue_url, "Hello, World!")
-messages = queue.receive_messages(queue_url)
-print(messages)
-```
-
----
-
-### **Storage**
-Handle S3 buckets and objects.
-
-```python
-from aws_wrapper.storage import Storage
-
-storage = Storage(region="us-east-1")
-
-# Create a bucket and upload a file
-storage.create_bucket("test-bucket")
-storage.upload_file("test-bucket", "local_file.txt", "remote_file.txt")
-```
-
----
-
-### **Database**
-Interact with DynamoDB tables and records.
-
-```python
-from aws_wrapper.database import Database
-
-db = Database(region="us-east-1")
-
-# Create a DynamoDB table
-db.create_table(
-    "test-table",
-    key_schema=[{"AttributeName": "id", "KeyType": "HASH"}],
-    attribute_definitions=[{"AttributeName": "id", "AttributeType": "S"}],
-    provisioned_throughput={"ReadCapacityUnits": 1, "WriteCapacityUnits": 1},
-)
-```
-
----
-
-### **Compute**
-Manage EC2 instances and related resources.
-
-```python
-from aws_wrapper.compute import Compute
-
-compute = Compute(region="us-east-1")
-
-# Create an EC2 instance
-print(compute.create_instance("t2.micro", "test-key"))
+iam.attach_user_policy("test-user", policy_arn)
+iam.delete_policy(policy_arn)
 ```
 
 ---
@@ -218,6 +204,8 @@ miniAWS/
 │   ├── storage.py
 │   ├── database.py
 │   ├── compute.py
+├── demos/
+│   ├── demo_iam.py
 ├── tests/
 │   ├── test_iam.py
 │   ├── test_cloudwatch.py
