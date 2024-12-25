@@ -78,6 +78,7 @@ miniAWS/
 ├── demos/
 │   ├── demo_cloudformation.py
 │   ├── demo_cloudwatch.py
+│   ├── demo_compute.py
 │   ├── demo_iam.py
 |   ├── demo_queue.py
 ├── tests/
@@ -354,6 +355,59 @@ Demonstrates the use of the `Queue` class for managing AWS SQS queues and messag
    ```python
    message_count = queue_service.monitor_message_count(standard_queue_url)
    print(f"Messages in queue: {message_count}")
+   ```
+
+---
+
+### **`demo_compute.py`**
+Demonstrates the use of the `Compute` class for managing AWS EC2 resources.
+
+#### **Functionalities**
+
+1. **Key Pair Management**:
+   - Create a key pair.
+
+   ```python
+   key_material = compute.create_key_pair("demo-key")
+   print(f"Private key:\n{key_material}")
+   ```
+
+2. **Instance Operations**:
+   - Launch, stop, start, and terminate instances.
+   - Describe instance status.
+
+   ```python
+   instance_id = compute.create_instance("t2.micro", "demo-key")
+   print(f"Instance '{instance_id}' launched successfully.")
+   status = compute.describe_instance_status(instance_id)
+   print(f"Instance status: {status}")
+   compute.stop_instance(instance_id)
+   compute.start_instance(instance_id)
+   compute.terminate_instance(instance_id)
+   ```
+
+3. **Elastic IP Management**:
+   - Allocate and associate an Elastic IP.
+
+   ```python
+   elastic_ip = compute.allocate_elastic_ip()
+   print(f"Elastic IP allocated: {elastic_ip['PublicIp']}")
+   compute.associate_elastic_ip(elastic_ip["AllocationId"], instance_id)
+   ```
+
+4. **Tagging Resources**:
+   - Add tags to EC2 resources.
+
+   ```python
+   compute.tag_resource(instance_id, [{"Key": "Name", "Value": "DemoInstance"}])
+   ```
+
+5. **Volume Management**:
+   - Create and attach EBS volumes.
+
+   ```python
+   volume_id = compute.create_volume("us-east-1a", 10)
+   compute.attach_volume(volume_id, instance_id, "/dev/xvdf")
    ```
 
 ---
