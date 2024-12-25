@@ -81,10 +81,11 @@ miniAWS/
 │   ├── demo_compute.py
 │   ├── demo_iam.py
 |   ├── demo_queue.py
+|   ├── demo_storage.py
 ├── tests/
 │   ├── test_compute.py
 │   ├── test_cloudformation.py
-│   ├── test_cloudwatch.py
+│   ├── test_cloudwatch.pyv
 │   ├── test_database.py
 │   ├── test_iam.py
 │   ├── test_queue.py
@@ -408,6 +409,52 @@ Demonstrates the use of the `Compute` class for managing AWS EC2 resources.
    ```python
    volume_id = compute.create_volume("us-east-1a", 10)
    compute.attach_volume(volume_id, instance_id, "/dev/xvdf")
+   ```
+
+---
+
+### **`demo_storage.py`**
+Demonstrates the use of the `Storage` class for managing AWS S3 buckets and objects.
+
+#### **Functionalities**
+
+1. **Bucket Management**:
+   - Create and list buckets.
+
+   ```python
+   storage.create_bucket("demo-bucket")
+   buckets = storage.list_buckets()
+   print(f"Buckets: {[bucket['Name'] for bucket in buckets]}")
+   ```
+
+2. **File Upload**:
+   - Upload a file to a bucket.
+
+   ```python
+   storage.upload_file("demo-bucket", "example.txt", "This is a test file for the demo.")
+   ```
+
+3. **List Objects in Bucket**:
+   - List all objects in a bucket.
+
+   ```python
+   objects = storage.list_objects("demo-bucket")
+   print(f"Objects: {[obj['Key'] for obj in objects]}")
+   ```
+
+4. **Delete Object**:
+   - Delete an object from a bucket.
+
+   ```python
+   storage.delete_object("demo-bucket", "example.txt")
+   ```
+
+5. **Verify Deletion**:
+   - Verify that the object is deleted.
+
+   ```python
+   objects_after_deletion = storage.list_objects("demo-bucket")
+   print(f"Objects after deletion: {[obj['Key'] for obj in objects_after_deletion]}")
    ```
 
 ---
