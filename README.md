@@ -68,25 +68,26 @@ pytest tests
 miniAWS/
 ├── aws_wrapper/
 │   ├── __init__.py
-│   ├── iam.py
-│   ├── cloudwatch.py
 │   ├── cloudformation.py
+│   ├── cloudwatch.py
+│   ├── compute.py
+│   ├── database.py
+│   ├── iam.py
 │   ├── queue.py
 │   ├── storage.py
-│   ├── database.py
-│   ├── compute.py
 ├── demos/
-│   ├── demo_iam.py
-│   ├── demo_cloudwatch.py
 │   ├── demo_cloudformation.py
+│   ├── demo_cloudwatch.py
+│   ├── demo_iam.py
+|   ├── demo_queue.py
 ├── tests/
-│   ├── test_iam.py
-│   ├── test_cloudwatch.py
+│   ├── test_compute.py
 │   ├── test_cloudformation.py
+│   ├── test_cloudwatch.py
+│   ├── test_database.py
+│   ├── test_iam.py
 │   ├── test_queue.py
 │   ├── test_storage.py
-│   ├── test_database.py
-│   ├── test_compute.py
 ├── requirements.txt
 └── README.md
 ```
@@ -301,6 +302,58 @@ Demonstrates the use of the `CloudFormation` class for managing AWS CloudFormati
 
    ```python
    print(cloudformation.delete_stack(stack_name))
+   ```
+
+---
+
+### **`demo_queue.py`**
+Demonstrates the use of the `Queue` class for managing AWS SQS queues and messages.
+
+#### **Functionalities**
+
+1. **Queue Management**:
+   - Create standard and FIFO queues.
+   - Create and associate dead-letter queues (DLQs).
+   - Delete queues.
+
+   ```python
+   standard_queue_url = queue_service.create_queue("DemoQueue")
+   fifo_queue_url = queue_service.create_fifo_queue("DemoQueue.fifo")
+   dlq_url, dlq_arn = queue_service.create_dead_letter_queue("DemoDLQ")
+   queue_service.associate_dead_letter_queue(standard_queue_url, dlq_arn, max_receive_count=5)
+   queue_service.delete_queue(standard_queue_url)
+   ```
+
+2. **Message Handling**:
+   - Send individual and batch messages.
+   - Receive and delete messages.
+
+   ```python
+   queue_service.send_message(standard_queue_url, "Hello, Queue!")
+   batch_messages = [
+       {"Id": "1", "MessageBody": "Message 1"},
+       {"Id": "2", "MessageBody": "Message 2"},
+   ]
+   queue_service.send_message_batch(standard_queue_url, batch_messages)
+   messages = queue_service.receive_messages(standard_queue_url, max_number=5)
+   for message in messages:
+       queue_service.delete_message(standard_queue_url, message["ReceiptHandle"])
+   ```
+
+3. **Queue Attributes**:
+   - Retrieve and update queue attributes.
+
+   ```python
+   attributes = queue_service.get_queue_attributes(standard_queue_url)
+   queue_service.set_queue_attributes(standard_queue_url, {"VisibilityTimeout": "30"})
+   ```
+
+4. **Monitoring**:
+   - Monitor the approximate number of messages in a queue.
+
+   ```python
+   message_count = queue_service.monitor_message_count(standard_queue_url)
+   print(f"Messages in queue: {message_count}")
    ```
 
 ---
