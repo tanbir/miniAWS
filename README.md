@@ -79,6 +79,7 @@ miniAWS/
 │   ├── demo_cloudformation.py
 │   ├── demo_cloudwatch.py
 │   ├── demo_compute.py
+│   ├── demo_database.py
 │   ├── demo_iam.py
 |   ├── demo_queue.py
 |   ├── demo_storage.py
@@ -455,6 +456,59 @@ Demonstrates the use of the `Storage` class for managing AWS S3 buckets and obje
    ```python
    objects_after_deletion = storage.list_objects("demo-bucket")
    print(f"Objects after deletion: {[obj['Key'] for obj in objects_after_deletion]}")
+   ```
+
+---
+
+### **`demo_database.py`**
+Demonstrates the use of the `Database` class for managing AWS DynamoDB resources.
+
+#### **Functionalities**
+
+1. **Table Management**:
+   - Create and describe DynamoDB tables.
+
+   ```python
+   key_schema = [{"AttributeName": "id", "KeyType": "HASH"}]
+   attribute_definitions = [{"AttributeName": "id", "AttributeType": "S"}]
+   provisioned_throughput = {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
+   print(database.create_table("DemoTable", key_schema, attribute_definitions, provisioned_throughput))
+   table_info = database.describe_table("DemoTable")
+   print(f"Table Info: {table_info}")
+   ```
+
+2. **Item Operations**:
+   - Add, update, delete, and scan items in the table.
+
+   ```python
+   item = {"id": {"S": "1"}, "name": {"S": "Alice"}, "age": {"N": "30"}}
+   print(database.put_item("DemoTable", item))
+   items = database.scan_table("DemoTable")
+   print(f"Items in table: {items}")
+
+   update_expression = "SET #name = :name, age = :age"
+   expression_attribute_values = {":name": {"S": "Alice Updated"}, ":age": {"N": "31"}}
+   expression_attribute_names = {"#name": "name"}
+   print(database.update_item("DemoTable", {"id": {"S": "1"}}, update_expression, expression_attribute_values, expression_attribute_names))
+   print(database.delete_item("DemoTable", {"id": {"S": "1"}}))
+   ```
+
+3. **Batch Operations**:
+   - Insert multiple items into a table.
+
+   ```python
+   batch_items = [
+       {"id": {"S": "2"}, "name": {"S": "Bob"}, "age": {"N": "25"}},
+       {"id": {"S": "3"}, "name": {"S": "Charlie"}, "age": {"N": "28"}},
+   ]
+   print(database.batch_write_items("DemoTable", batch_items))
+   ```
+
+4. **Table Deletion**:
+   - Delete a DynamoDB table.
+
+   ```python
+   print(database.delete_table("DemoTable"))
    ```
 
 ---

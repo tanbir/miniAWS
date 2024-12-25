@@ -6,6 +6,7 @@ class Database(AWSManager):
     def __init__(self, region="us-east-1"):
         super().__init__(region)
         self.dynamodb = boto3.client("dynamodb", region_name=self.region)
+        self.dynamodb_resource = boto3.resource("dynamodb", region_name=self.region)
 
     def create_table(self, table_name, key_schema, attribute_definitions, provisioned_throughput):
         """
@@ -116,15 +117,3 @@ class Database(AWSManager):
         self.dynamodb.delete_table(TableName=table_name)
         return f"Table '{table_name}' deleted successfully."
 
-    def batch_write_items(self, table_name, items):
-        """
-        Inserts multiple items into a DynamoDB table using a batch write operation.
-
-        :param table_name: Name of the table.
-        :param items: List of items to insert.
-        :return: Success message.
-        """
-        with self.dynamodb.batch_writer(TableName=table_name) as batch:
-            for item in items:
-                batch.put_item(Item=item)
-        return f"Batch write to table '{table_name}' completed successfully."
